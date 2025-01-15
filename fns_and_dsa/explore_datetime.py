@@ -19,3 +19,6 @@ def calculate_future_date():
 
 current_date = display_current_datetime()
 future_date = calculate_future_date()
+
+print("Formatted Current Date:", current_date)
+print("Formatted Future Date:", future_date)
