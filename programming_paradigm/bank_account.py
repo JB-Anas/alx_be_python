@@ -1,45 +1,36 @@
-# Define Global Conversion Factors (exact format)
-FAHRENHEIT_TO_CELSIUS_FACTOR = 5 / 9
-CELSIUS_TO_FAHRENHEIT_FACTOR = 9 / 5
-FAHRENHEIT_OFFSET = 32  # Offset used in Fahrenheit to Celsius conversion
+# main-0.py
+import sys
+from bank_account import BankAccount
 
-# Function to convert Fahrenheit to Celsius
-def convert_to_celsius(fahrenheit):
-    celsius = (fahrenheit - FAHRENHEIT_OFFSET) * FAHRENHEIT_TO_CELSIUS_FACTOR
-    return celsius
-
-# Function to convert Celsius to Fahrenheit
-def convert_to_fahrenheit(celsius):
-    fahrenheit = (celsius * CELSIUS_TO_FAHRENHEIT_FACTOR) + FAHRENHEIT_OFFSET
-    return fahrenheit
-
-# User interaction
-def temperature_conversion():
-    # User input
-    temperature = input("Enter the temperature to convert: ")
+def main():
+    # Create a BankAccount instance with an initial balance of 100
+    account = BankAccount(100)  # Example starting balance
     
-    try:
-        # Try to convert the input to a float
-        temperature = float(temperature)
-        
-        # Ask for the unit
-        unit = input("Is this temperature in Celsius or Fahrenheit? (C/F): ").strip().lower()
+    if len(sys.argv) < 2:
+        # Provide usage instructions if not enough arguments are provided
+        print("Usage: python main.py <command>:<amount>")
+        print("Commands: deposit, withdraw, display")
+        sys.exit(1)
 
-        # Check if the unit is valid
-        if unit == "c":
-            # Convert Celsius to Fahrenheit
-            converted_temperature = convert_to_fahrenheit(temperature)
-            print(f"{temperature}°C is {converted_temperature}°F")
-        elif unit == "f":
-            # Convert Fahrenheit to Celsius
-            converted_temperature = convert_to_celsius(temperature)
-            print(f"{temperature}°F is {converted_temperature}°C")
+    # Parse the command and amount
+    command, *params = sys.argv[1].split(':')
+    amount = float(params[0]) if params else None
+
+    if command == "deposit" and amount is not None:
+        # Call the deposit method and print confirmation
+        account.deposit(amount)
+        print(f"Deposited: ${amount:.2f}")
+    elif command == "withdraw" and amount is not None:
+        # Call the withdraw method and check if withdrawal is successful
+        if account.withdraw(amount):
+            print(f"Withdrew: ${amount:.2f}")
         else:
-            print("Invalid unit. Please enter 'C' for Celsius or 'F' for Fahrenheit.")
-            
-    except ValueError:
-        # If the user enters a non-numeric value for the temperature
-        print("Invalid temperature. Please enter a numeric value.")
+            print("Insufficient funds.")
+    elif command == "display":
+        # Display the current balance
+        account.display_balance()
+    else:
+        print("Invalid command.")
 
-# Start the conversion process
-temperature_conversion()
+if __name__ == "__main__":
+    main()
